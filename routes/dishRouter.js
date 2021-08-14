@@ -1,19 +1,19 @@
 const express = require("express");
-const bodyParser = require("body-parser"); // to add all the information we pass to the API to the request.body object
-var authenticate = require('../authenticate')
+const authenticate = require('../authenticate');
 const cors = require('./cors')
 
 const Dishes = require("../models/dishes");
 
 const dishRouter = express.Router();
 
-dishRouter.use(bodyParser.json());
+dishRouter.use(express.json());
 
-dishRouter
-    .route("/")
-    .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
+dishRouter.route("/")
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200)
+    })
     .get(cors.cors, (req, res, next) => {
-        Dishes.find({})
+        Dishes.find(req.query)
             .populate('comments.author')
             .then((dishes) => {
                 res.statusCode = 200;
@@ -46,9 +46,10 @@ dishRouter
             .catch((err) => next(err));
     });
 
-dishRouter
-    .route("/:dishId")
-    .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
+dishRouter.route("/:dishId")
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200)
+    })
     .get(cors.cors, (req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')
@@ -83,9 +84,25 @@ dishRouter
     });
 
 // -------------------Comment's things------------------------------------------------------------
+
+
+
+/* 
+    in REST api
+    - comment is sub document inside the dishes document
+    - every dish include its own set of comments
+
+    in React client
+    - comments were kept independent of the dishes document
+    - comments document carry corresponding dish id 
+
+    // TODO add /comments REST API end point independent of the dish
+*/
 dishRouter
     .route("/:dishId/comments")
-    .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200)
+    })
     .get(cors.cors, (req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')
@@ -153,7 +170,9 @@ dishRouter
 
 dishRouter
     .route("/:dishId/comments/:commentId")
-    .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200)
+    })
     .get(cors.cors, (req, res, next) => {
         Dishes.findById(req.params.dishId)
             .populate('comments.author')

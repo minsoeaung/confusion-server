@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 var authenticate = require('../authenticate')
 const cors = require('./cors')
 
@@ -7,13 +6,13 @@ const Leaders = require("../models/leaders");
 
 const leaderRouter = express.Router();
 
-leaderRouter.use(bodyParser.json());
+leaderRouter.use(express.json());
 
 leaderRouter
     .route("/")
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
     .get(cors.cors, (req, res, next) => {
-        Leaders.find({})
+        Leaders.find(req.query)
             .then(
                 (leaders) => {
                     res.statusCode = 200;

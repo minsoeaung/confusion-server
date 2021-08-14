@@ -1,54 +1,120 @@
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var User = require('./models/user');
+// passport things
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
-var JwtStrategy = require('passport-jwt').Strategy
-var ExtractJwt = require('passport-jwt').ExtractJwt
-var jwt = require('jsonwebtoken')  // to sign and verify JSON web tokens
-var FacebookTokenStrategy = require('passport-facebook-token')
+// requires the model with Passport-Local Mongoose plugged in 
+const User = require('./models/user');
 
-var config = require('./config')
+// for use with jwt
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// to sign and verify JSON web tokens
+const jwt = require('jsonwebtoken');
+const FacebookTokenStrategy = require('passport-facebook-token');
+
+// configuration file
+const config = require('./config');
+
+
+
+
+// =========================================================================================================================
+// ================================================ Local Strategy  ========================================================
+// =========================================================================================================================
+
+// use User.createStrategy instead of authenticate() , starting with version 0.2.1
+passport.use(new LocalStrategy(User.authenticate())); // .authenticate() method provided by passport-local-mongoose
+/*
+    passport.session() middleware was used in app.js (main driver)
+    In a typical web app, the credentials used to authenticate a user will only be transmitted during the login req.
+    If auth succeeds, a session will be established and maintained via a cookie set in the user's browser.
+    Each subsequent req will not contain credentials, but rather the unique cookie that identifies the session.
+    In order to support login sessions, Passport will serialize and deserialize user instances to and from the session.
+*/
+passport.serializeUser(User.serializeUser()); // .serializeUser() provided by passport-local-mongoose plugin
+passport.deserializeUser(User.deserializeUser()); // .deserializeUser() provided by passport-local-mongoose plugin
+
+
+
+
+
+// ==========================================================================================================================
+// ==============================================JSON WEB TOKEN  ============================================================
+// ==========================================================================================================================
 
 exports.getToken = (user) => {
     return jwt.sign(user, config.secretKey, { expiresIn: 3600 })
 }
 
-var opts = {}
+
+
+
+
+// ==========================================================================================================================
+// ===============================================  JWT Strategy  ===========================================================
+// ==========================================================================================================================
+
+// options is an object literal containing options to control how the token is extracted from the request or verified
+const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 opts.secretOrKey = config.secretKey
 
+// new JwtStrategy(options, verify())
 exports.jwtPassport = passport.use(new JwtStrategy(opts,
+
+    // jwt_payload is an object literal containing the decoded JWT payload
+    // done is a passport error first callback accepting arguments done(error, user, info)
     (jwt_payload, done) => {
         console.log('JWT payload: ', jwt_payload)
-        User.findOne({ _id: jwt_payload._id }, (err, user) => {
+
+        User.findOne({ id: jwt_payload.sub }, (err, user) => {
             if (err)
                 return done(err, false)
-            else if (user)
+            if (user)
                 return done(null, user)
             else
                 return done(null, false)
         })
     }))
-
+/*
+    app.post('/login', passport.authenticate('jwt', {session: false}))
+*/
 exports.verifyUser = passport.authenticate('jwt', { session: false })
 
+
+
+
+
+// ==========================================================================================================================
+// ==========================================================================================================================
+// ==========================================================================================================================
+
 exports.verifyAdmin = (req, res, next) => {
+    let err;
+
     if (!req.user.admin) {
         err = new Error("You are not authorized to perform this operation!")
         err.status = 403
         return next(err)
-    } else if (req.user.admin) {
+    }
+
+    if (req.user.admin) {
         return next()
-    } else {
+    } 
+    
+    else {
         err = new Error('Admin Verification Failed!')
         err.status = 500
         return next(err)
     }
 }
+
+
+// ==========================================================================================================================
+// ==========================================================================================================================
+// ==========================================================================================================================
+
 
 exports.facebookPassport = passport.use(new FacebookTokenStrategy({
     clientID: config.facebook.clientId,

@@ -1,34 +1,31 @@
-var express = require('express')
-var cookieParser = require('cookie-parser')
-var session = require('express-session')
-var FileStore = require('session-file-store')(session)
-var createError = require('http-errors')
-var path = require('path')
-var logger = require('morgan')
+const express = require('express');
+const createError = require('http-errors');
+const path = require('path');
+const logger = require('morgan');
 
-var passport = require('passport')
-var authenticate = require('./authenticate')
-var config = require('./config')
+const passport = require('passport');
+const config = require('./config');
 
-var indexRouter = require('./routes/index')
-var dishRouter = require('./routes/dishRouter')
-var promoRouter = require('./routes/promoRouter')
-var leaderRouter = require('./routes/leaderRouter')
-var usersRouter = require('./routes/users')
+// all router importing
+const indexRouter = require('./routes/index');
+const dishRouter = require('./routes/dishRouter');
+const promoRouter = require('./routes/promoRouter');
+const leaderRouter = require('./routes/leaderRouter');
+const usersRouter = require('./routes/users');
 const uploadRouter = require('./routes/uploadRouter')
-var favoriteRouter = require('./routes/favoritesRouter')
+const favoriteRouter = require('./routes/favoritesRouter');
 
-var app = express();
+const app = express();
 
-// Secure traffic only
+// secure traffic only, redirect all http to https
 app.all('*', (req, res, next) => {
-	if (req.secure) {
+	if (req.secure)
 		return next()
-	} else {
+	else
 		res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url)
-	}
 })
 
+// connecting to database
 const mongoose = require('mongoose')
 const url = config.mongoUrl
 const connect = mongoose.connect(url)
@@ -41,18 +38,24 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
 
 app.use(logger('dev'))
+
+// to add all the information we pass to the API to the request.body object
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+// to serve static pages from public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Passport Middleware =================================================================================
+// passport.initialize() middleware is required to initialize Passport.
+// If app use persistent login sessions, passport.session() middleware must also be used.
 app.use(passport.initialize())
 app.use(passport.session())
+// =====================================================================================================
 
+// ROUTING
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
-
-app.use(express.static(path.join(__dirname, 'public')));  // to serve static pages from public folder
-
 app.use('/dishes', dishRouter)
 app.use('/promotions', promoRouter)
 app.use('/leaders', leaderRouter)
