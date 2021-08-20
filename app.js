@@ -18,6 +18,16 @@ const commentRouter = require('./routes/commentRouter')
 
 const app = express();
 
+// connecting to database
+const mongoose = require('mongoose')
+const url = config.mongoUrl
+const connect = mongoose.connect(url)
+connect.then((db) => {
+	console.log('Connected correctly to the server')
+}, (err) => {
+	console.log(err)
+})
+
 // secure traffic only, redirect all http to https
 app.all('*', (req, res, next) => {
 	if (req.secure)
@@ -25,14 +35,6 @@ app.all('*', (req, res, next) => {
 	else
 		res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url)
 })
-
-// connecting to database
-const mongoose = require('mongoose')
-const url = config.mongoUrl
-const connect = mongoose.connect(url)
-connect.then(() => {
-	console.log('Connected correctly to the server')
-}, (err) => { console.log(err) })
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -44,19 +46,20 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-// to serve static pages from public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Passport Middleware =================================================================================
 // passport.initialize() middleware is required to initialize Passport.
 // If app use persistent login sessions, passport.session() middleware must also be used.
 app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.session())
 // =====================================================================================================
 
 // ROUTING
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
+
+// to serve static pages from public folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/dishes', dishRouter)
 app.use('/promotions', promoRouter)
 app.use('/leaders', leaderRouter)

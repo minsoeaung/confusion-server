@@ -91,10 +91,11 @@ exports.verifyUser = passport.authenticate('jwt', { session: false })
 // ==========================================================================================================================
 
 exports.verifyAdmin = (req, res, next) => {
-    let err;
 
     if (!req.user.admin) {
-        err = new Error("You are not authorized to perform this operation!")
+
+        console.log(req.user.username)
+        let err = new Error("You are not authorized to perform this operation!")
         err.status = 403
         return next(err)
     }
