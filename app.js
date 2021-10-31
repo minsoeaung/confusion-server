@@ -1,22 +1,22 @@
-const express = require('express');
-const createError = require('http-errors');
-const path = require('path');
-const logger = require('morgan');
+let express = require('express');
+let createError = require('http-errors');
+let path = require('path');
+let logger = require('morgan');
 
-const passport = require('passport');
-const config = require('./config');
+let passport = require('passport');
+let config = require('./config');
 
 // all router importing
-const indexRouter = require('./routes/index');
-const dishRouter = require('./routes/dishRouter');
-const promoRouter = require('./routes/promoRouter');
-const leaderRouter = require('./routes/leaderRouter');
-const usersRouter = require('./routes/users');
-const uploadRouter = require('./routes/uploadRouter')
-const favoriteRouter = require('./routes/favoritesRouter');
-const commentRouter = require('./routes/commentRouter')
+let indexRouter = require('./routes/index');
+let dishRouter = require('./routes/dishRouter');
+let promoRouter = require('./routes/promoRouter');
+let leaderRouter = require('./routes/leaderRouter');
+let usersRouter = require('./routes/users');
+let uploadRouter = require('./routes/uploadRouter')
+let favoriteRouter = require('./routes/favoritesRouter');
+let commentRouter = require('./routes/commentRouter')
 
-const app = express();
+let app = express();
 
 // connecting to database
 const mongoose = require('mongoose')

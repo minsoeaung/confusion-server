@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
-const authenticate = require('../authenticate');
+let express = require('express');
+let router = express.Router();
+let User = require('../models/user');
+let passport = require('passport');
+let authenticate = require('../authenticate');
 const cors = require('./cors')
-
-const User = require('../models/user');
 
 router.use(express.json())
 
@@ -60,7 +59,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
 		if(err) return next(err)
 		
 		// handle user not found or password not correct problem
-		// the reason for unsuccess is in info
+		// the reason for unsuccessful is in info
 		if(!user) {
 			res.statusCode = 401; // 401 unauthorized
 			res.setHeader('Content-Type', 'application/json');
@@ -76,7 +75,7 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
 				res.json({ success: false, status: 'Login Unsuccessful!', err: "Could not log in user" });
 			}
 
-			const token = authenticate.getToken({ _id: req.user._id });
+			let token = authenticate.getToken({ _id: req.user._id });
 			res.statusCode = 200;
 			res.setHeader('Content-Type', 'application/json');
 			res.json({ success: true, status: 'Login Successful!', token: token });
@@ -91,7 +90,7 @@ router.get('/logout', cors.corsWithOptions, (req, res, next) => {
 		res.redirect('/');
 	}
 	else {
-		const err = new Error('You are not logged in!');
+		let err = new Error('You are not logged in!');
 		err.status = 403;
 		next(err);
 	}
@@ -100,7 +99,7 @@ router.get('/logout', cors.corsWithOptions, (req, res, next) => {
 // login with facebook
 router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res) => {
 	if (req.user) {
-		const token = authenticate.getToken({ _id: req.user._id });
+		let token = authenticate.getToken({ _id: req.user._id });
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.json({ success: true, token: token, status: 'You are successfully logged in!' });

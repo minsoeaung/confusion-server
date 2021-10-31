@@ -1,7 +1,7 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+let mongoose = require('mongoose')
+let Schema = mongoose.Schema
 
-var favoriteSchema = new Schema({
+let favoriteSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

@@ -1,9 +1,8 @@
 // ---------------- cross origin resource sharing ----------------------//
-
 const cors = require('cors')
 
-const whitelist = ['http://localhost:3000', 'https://localhost:3443', 'http://localhost:3001']
-const corsOptionsDelegate = (req, callback) => {
+const whitelist = ['http://localhost:3000', 'https://localhost:3443', 'http://localhost:3001', 'http://192.168.1.9:3001']
+let corsOptionsDelegate = (req, callback) => {
 
     let corsOptions;
 
@@ -17,5 +16,5 @@ const corsOptionsDelegate = (req, callback) => {
     callback(null, corsOptions)
 };
 
-exports.cors = cors()
-exports.corsWithOptions = cors(corsOptionsDelegate)
+exports.cors = cors() // allow all origins
+exports.corsWithOptions = cors(corsOptionsDelegate) // allow only whitelisted origins

@@ -1,5 +1,5 @@
 const express = require("express");
-const authenticate = require('../authenticate');
+let authenticate = require('../authenticate');
 const cors = require('./cors')
 
 const Promotions = require("../models/promotions");

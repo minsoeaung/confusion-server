@@ -1,20 +1,20 @@
 // passport things
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+let passport = require('passport');
+let LocalStrategy = require('passport-local').Strategy;
 
 // requires the model with Passport-Local Mongoose plugged in 
-const User = require('./models/user');
+let User = require('./models/user');
 
 // for use with jwt
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+let JwtStrategy = require('passport-jwt').Strategy;
+let ExtractJwt = require('passport-jwt').ExtractJwt;
 
 // to sign and verify JSON web tokens
-const jwt = require('jsonwebtoken');
-const FacebookTokenStrategy = require('passport-facebook-token');
+let jwt = require('jsonwebtoken');
+let FacebookTokenStrategy = require('passport-facebook-token');
 
 // configuration file
-const config = require('./config');
+let config = require('./config');
 
 
 
@@ -44,7 +44,8 @@ passport.deserializeUser(User.deserializeUser()); // .deserializeUser() provided
 // ==========================================================================================================================
 
 exports.getToken = (user) => {
-    return jwt.sign(user, config.secretKey, { expiresIn: 3600 })
+    return jwt.sign(user, config.secretKey)
+    // , { expiresIn: 3600 } currently removed
 }
 
 
@@ -56,7 +57,7 @@ exports.getToken = (user) => {
 // ==========================================================================================================================
 
 // options is an object literal containing options to control how the token is extracted from the request or verified
-const opts = {}
+let opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 opts.secretOrKey = config.secretKey
 
@@ -100,11 +101,10 @@ exports.verifyAdmin = (req, res, next) => {
         return next(err)
     }
 
+    let err;
     if (req.user.admin) {
         return next()
-    } 
-    
-    else {
+    } else {
         err = new Error('Admin Verification Failed!')
         err.status = 500
         return next(err)
