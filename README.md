@@ -8,22 +8,20 @@
 
 
 ## Supported API Endpoints
-###`/dishes`
-###`/dishes/:dishId`
-###`/promotions`
-###`/promotions/:promoId` 
-###`/leaders`
-###`/leaders/:leaderId`
-###`/favorites`
-###`/favorites/:dishId`
-###`/comments`
-###`/comments/:commentId`
-###`/users`
-###`/users/signup`
-###`/users/login`
-###`/users/logout`
-###`/users/facebook/token`
-###`/users/checkJWTToken`
+#### `/dishes`
+#### `/dishes/:dishId`
+#### `/promotions`
+#### `/promotions/:promoId` 
+#### `/leaders`
+#### `/leaders/:leaderId`
+#### `/favorites`
+#### `/favorites/:dishId`
+#### `/comments`
+#### `/comments/:commentId`
+#### `/users`
+#### `/users/signup`
+#### `/users/login`
+#### `/users/logout`
 
 ## Setup & Usage
 1. Clone this repo and go to project directory
