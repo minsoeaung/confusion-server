@@ -69,7 +69,8 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
         console.log('JWT payload: ', jwt_payload)
 
-        User.findOne({ id: jwt_payload.sub }, (err, user) => {
+        User.findOne({ _id: jwt_payload._id }, (err, user) => {
+            // console.log("I am inside User.findOne's projection function")
             if (err)
                 return done(err, false)
             if (user)
