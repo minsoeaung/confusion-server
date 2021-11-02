@@ -1,10 +1,11 @@
 # A REST API for the [confusion-client-react](https://github.com/minsoeaung/confusion-client-react) to access backend services
 
 ## Built with
-- [nodejs](https://nodejs.org/en/)
-- [expressjs](https://expressjs.com/)
-- [passportjs](http://www.passportjs.org/)
-- [mongodb](https://www.mongodb.com/)
+- [NodeJs](https://nodejs.org/en/)
+- [ExpressJs](https://expressjs.com/)
+- [PassportJs](http://www.passportjs.org/)
+- [MongooseJs](https://mongoosejs.com/)
+- and more
 
 
 ## Supported API Endpoints
@@ -24,8 +25,12 @@
 #### `/users/logout`
 
 ## Setup & Usage
-1. Clone this repo and go to project directory
-2. Run `npm install` and wait installing its dependencies
-3. Start a mongodb server ([help](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/))
-    - example -> `mongod --dbpath=path/to/db --bind_ip 127.0.0.1`
-4. Run `npm start` to start the server
+1. clone this repository
+   - `git clone https://github.com/minsoeaung/confusion-server`
+2. in the project directory
+   - Run `npm install` and wait installing its dependencies
+3. run a Mongodb Server by following its [guide](https://docs.mongodb.com/manual/tutorial/manage-mongodb-processes/)
+   - example: `mongod --dbpath=path/to/db --bind_ip 127.0.0.1`
+4. change mongoUrl's value in config.js file for the server to know where the database is running
+   - example: `'mongoUrl': 'mongodb://localhost:27017/conFusion`
+5. run `npm start` to start the server
