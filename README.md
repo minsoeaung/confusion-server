@@ -33,4 +33,8 @@
    - example: `mongod --dbpath=path/to/db --bind_ip 127.0.0.1`
 4. change mongoUrl's value in config.js file for the server to know where the database is running
    - example: `'mongoUrl': 'mongodb://localhost:27017/conFusion`
-5. run `npm start` to start the server
+5. insert data to mongodb ( arrays are provided in `sampleDataToSaveInMongoDB.js` file)
+   - insert dishes array to dishes collection
+   - insert leaders array to leaders collection
+   - insert promotions array to promotions collection
+6. run `npm start` to start the server
